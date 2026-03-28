@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 #  🫁 Lung Cancer Research Paper
 
 ***Abstract***-Lung cancer is a significant contributor to 
@@ -61,5 +61,3 @@ Check out the demo video showcasing the application's functionality:
    $ streamlit run streamlit_app.py
    ```
 =======
-# Lung-Cancer-Detection
->>>>>>> d82b79541f7ef3b9e4a1f7b228de8ed605fe8ddd
