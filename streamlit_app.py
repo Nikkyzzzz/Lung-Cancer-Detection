@@ -59,11 +59,14 @@ st.write(
 
 # --------------------------------------------------------------
 
+<<<<<<< HEAD
 st.subheader("** Lung Cancer Image Analysis**")
 
 # Model selection
 image_choice = st.selectbox("**Choose the Image Type for Prediction**", options=["CT-Scan Image", "Histopathological Image"])
 
+=======
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 # Define image dimensions and preprocess function based on your model training
 IMG_SIZE = (244, 244)  # Match to the input size your model was trained on
 
@@ -97,6 +100,11 @@ def preprocess_cnn_image(image):
 
 # Preprocess image for PyTorch ViT models
 def preprocess_vit_image(image, target_size):
+<<<<<<< HEAD
+=======
+    from torchvision import transforms
+
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
     transform = transforms.Compose([
         transforms.Resize(target_size),
         transforms.ToTensor(),
@@ -135,6 +143,7 @@ def get_vit_input_size(model):
     except Exception:
         return IMG_SIZE
 
+<<<<<<< HEAD
 def print_deduction(status, confidence=None):
     if confidence is not None:
         st.write(f"**Model Confidence:** {confidence:.2f}%")
@@ -148,6 +157,50 @@ def print_deduction(status, confidence=None):
         st.write("**Diagnosis:** The image indicates an Adenocarcinoma (ACA) case. Further evaluation and treatment should be discussed with a healthcare professional.")
     elif status == "Malignant_SCC":
         st.write("**Diagnosis:** The image indicates Squamous Cell Carcinoma (SCC). Prompt medical intervention is necessary, and treatment options should be explored with a specialist.")
+=======
+def print_deduction(status, confidence=None, output=None):
+    target = output if output is not None else st
+
+    severity = "other"
+    title = "Prediction"
+    message = "Prediction complete."
+
+    if status == 'Benign':
+        severity = "benign"
+        title = "Benign"
+        message = "The image shows a benign case. No malignancy detected, but regular monitoring is advised."
+    elif status == 'Malignant':
+        severity = "malignant"
+        title = "Malignant"
+        message = "The image indicates a malignant lung cancer case. Immediate medical attention is recommended."
+    elif status == 'Normal':
+        severity = "normal"
+        title = "Normal"
+        message = "The image appears normal with no signs of lung cancer."
+    elif status == "Malignant_ACA":
+        severity = "malignant"
+        title = "Malignant - Adenocarcinoma"
+        message = "The image indicates an Adenocarcinoma (ACA) case. Further evaluation and treatment should be discussed with a healthcare professional."
+    elif status == "Malignant_SCC":
+        severity = "malignant"
+        title = "Malignant - Squamous Cell Carcinoma"
+        message = "The image indicates Squamous Cell Carcinoma (SCC). Prompt medical intervention is necessary, and treatment options should be explored with a specialist."
+
+    confidence_text = f"{confidence:.2f}%" if confidence is not None else "N/A"
+    target.markdown("#### Prediction Result")
+    target.markdown(
+        f"""
+        <div class="result-card {severity}">
+            <div class="result-header">
+                <div class="result-title">{title}</div>
+                <div class="result-confidence">Confidence: {confidence_text}</div>
+            </div>
+            <div class="result-msg">{message}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 
 model_names = ["CNN Base Model", "CNN Hybrid Model", "ViT Base Model", "ViT CVT Model", "ViT Parallel Model"]
 
@@ -161,8 +214,57 @@ model_paths = {
     "ViT Histopathological Model": "models/vit_ground_up_histopathological_model.pth"
 }
 
+<<<<<<< HEAD
 def _build_vit_from_state_dict(state_dict):
     """Recreate the lucidrains-style ViT from a saved state_dict."""
+=======
+_drive_models_download_attempted = False
+
+def _download_models_folder_from_drive_once():
+    """Attempt one-time download of missing artifacts from the shared Drive folder."""
+    global _drive_models_download_attempted
+    if _drive_models_download_attempted:
+        return
+    _drive_models_download_attempted = True
+
+    try:
+        import gdown
+    except ImportError:
+        st.error(
+            "Missing dependency 'gdown'. Install it with: pip install gdown, "
+            "then rerun the app to auto-download models from Google Drive."
+        )
+        return
+
+    os.makedirs("models", exist_ok=True)
+    try:
+        with st.spinner("Downloading missing model files from Google Drive. This can take a few minutes on first run..."):
+            gdown.download_folder(
+                url=DRIVE_MODELS_FOLDER_URL,
+                output="models",
+                quiet=True,
+                remaining_ok=True,
+            )
+    except Exception as exc:
+        st.error(f"Could not download model files from Google Drive: {exc}")
+
+def _ensure_local_artifact(file_path):
+    if os.path.exists(file_path):
+        return True
+    _download_models_folder_from_drive_once()
+    if not os.path.exists(file_path):
+        st.error(
+            f"Missing required file: {file_path}. "
+            f"Please verify it exists in the Drive folder: {DRIVE_MODELS_FOLDER_URL}"
+        )
+        return False
+    return True
+
+def _build_vit_from_state_dict(state_dict):
+    """Recreate the lucidrains-style ViT from a saved state_dict."""
+    from vit_model import ViT
+
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
     if "pos_embedding" not in state_dict or "to_patch_embedding.1.weight" not in state_dict:
         raise ValueError("Unsupported checkpoint format: missing ViT keys.")
 
@@ -211,6 +313,11 @@ def _build_vit_from_state_dict(state_dict):
 
 def _build_cvt_from_state_dict(state_dict):
     """Recreate the project CvT variant from a saved state_dict."""
+<<<<<<< HEAD
+=======
+    from cvt_model import CvT
+
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
     num_classes = state_dict["to_logits.2.weight"].shape[0]
 
     model = CvT(
@@ -247,6 +354,11 @@ def _build_cvt_from_state_dict(state_dict):
 
 def _build_parallel_vit_from_state_dict(state_dict):
     """Recreate the project ParallelViT variant from a saved state_dict."""
+<<<<<<< HEAD
+=======
+    from parallel_vit_model import ParallelViT
+
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
     pos_embedding = state_dict["pos_embedding"]
     num_patches = pos_embedding.shape[1] - 1
     dim = pos_embedding.shape[2]
@@ -353,7 +465,11 @@ def _materialize_lfs_pointer_if_possible(file_path):
     if os.path.getsize(file_path) < os.path.getsize(lfs_object_path):
         shutil.copyfile(lfs_object_path, file_path)
 
+<<<<<<< HEAD
 @st.cache_data
+=======
+@st.cache_resource(show_spinner=False)
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 def loadModel(model_name, model_signature=None):
     model_path = model_paths.get(model_name)
 
@@ -361,17 +477,30 @@ def loadModel(model_name, model_signature=None):
         st.error(f"Unknown model selection: '{model_name}'.")
         return None, None
         
+<<<<<<< HEAD
     if model_path and os.path.exists(model_path):
         if model_path.endswith(".keras"):
             # Load TensorFlow model
         
             model = tf.keras.models.load_model('models//cnn_model_2.keras')
+=======
+    if model_path and _ensure_local_artifact(model_path):
+        if model_path.endswith(".keras"):
+            # Load TensorFlow model
+
+            model = tf.keras.models.load_model(model_path)
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
             return model, 'tf'
         
         elif model_path.endswith(".pth"):
             # Load PyTorch model
             # Ensure CUDA-saved checkpoints can be loaded on CPU-only machines.
             try:
+<<<<<<< HEAD
+=======
+                import torch
+
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
                 _materialize_lfs_pointer_if_possible(model_path)
                 target_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
                 try:
@@ -407,12 +536,32 @@ def loadModel(model_name, model_signature=None):
     return None, None
     
 # Run model on uploaded image
+<<<<<<< HEAD
 def run_model(model_name, image):
+=======
+def run_model(model_name, image, output=None):
+    target = output if output is not None else st
+
+    loader_slot = target.empty()
+    loader_slot.markdown(
+        """
+        <div class="inference-loader">
+            <div class="inference-loader-text">Running AI inference pipeline...</div>
+            <div class="inference-loader-track">
+                <div class="inference-loader-bar"></div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
     model_path = model_paths.get(model_name)
     model_signature = None
     if model_path and os.path.exists(model_path):
         model_signature = (os.path.getmtime(model_path), os.path.getsize(model_path))
 
+<<<<<<< HEAD
     model, framework = loadModel(model_name, model_signature)
     if model:
         if framework == 'tf':
@@ -461,6 +610,124 @@ if uploaded_file is not None:
     if st.button("Predict Image"):
         # Run model on uploaded image
         run_model(model_choice, image)
+=======
+    try:
+        model, framework = loadModel(model_name, model_signature)
+        if model:
+            if framework == 'tf':
+                # Preprocess and predict using TensorFlow model
+                processed_image = preprocess_cnn_image(image)
+                predictions = model.predict(processed_image)
+                predicted_class = np.argmax(predictions, axis=1)[0]
+                confidence = np.max(predictions) * 100  # Get confidence as a percentage
+
+            elif framework == 'torch':
+                # Preprocess and predict using PyTorch model
+                import torch
+
+                vit_input_size = get_vit_input_size(model)
+                processed_image = preprocess_vit_image(image, vit_input_size)
+                model_device = next(model.parameters()).device
+                processed_image = processed_image.to(model_device)
+                with torch.no_grad():
+                    predictions = model(processed_image)
+                predicted_class = predictions.argmax(dim=1).item()
+                confidence = torch.softmax(predictions, dim=1)[0, predicted_class].item() * 100  # Confidence for PyTorch
+
+            # Define class labels (adjust these to match your model's output)
+            class_labels = ["Normal", "Benign", "Malignant", "Malignant_ACA", "Malignant_SCC"]
+            status = class_labels[predicted_class]
+
+            # Display the result with confidence
+            print_deduction(status, confidence, output=output)
+        else:
+            target.error(f"Model '{model_name}' could not be loaded.")
+    finally:
+        loader_slot.empty()
+
+st.markdown("<div class='section-banner'><span class='section-dot'></span>Clinical Workspace</div>", unsafe_allow_html=True)
+image_col, survey_col = st.columns([1.2, 1.0], gap="large")
+
+uploaded_file = None
+selected_image_model = None
+predict_image_clicked = False
+
+with image_col:
+    st.markdown("#### Image Model Controls")
+    image_choice = st.selectbox(
+        "**Choose Image Type**",
+        options=["CT-Scan Image", "Histopathological Image"],
+        key="img_type"
+    )
+
+    if image_choice == "CT-Scan Image":
+        selected_image_model = st.selectbox(
+            "**Choose Model**",
+            options=sorted(model_names),
+            key="img_model_ct"
+        )
+    else:
+        selected_image_model = st.selectbox(
+            "**Choose Model**",
+            options=["ViT Histopathological Model"],
+            key="img_model_hist"
+        )
+
+    uploaded_file = st.file_uploader(
+        "**Choose an image...**",
+        type=["jpg", "jpeg", "png"],
+        key="img_upload"
+    )
+
+    selected_model_path = model_paths.get(selected_image_model, "")
+    model_ready = os.path.exists(selected_model_path)
+    model_framework = "TensorFlow" if selected_model_path.endswith(".keras") else "PyTorch"
+    runtime_device = "GPU" if tf.config.list_physical_devices("GPU") else "CPU"
+
+    st.markdown(
+        f"""
+        <div class="model-health-row">
+            <div class="health-badge {'health-ready' if model_ready else 'health-warn'}">
+                <span class="health-dot"></span>
+                {'Local Model Ready' if model_ready else 'Model will fetch from Drive'}
+            </div>
+            <div class="health-badge {'health-gpu' if runtime_device == 'GPU' else 'health-cpu'}">
+                <span class="health-dot"></span>
+                Runtime: {runtime_device}
+            </div>
+            <div class="health-badge health-ready">
+                <span class="health-dot"></span>
+                Framework: {model_framework}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    predict_image_clicked = st.button("Predict Image", key="predict_image_button")
+
+    prediction_output = st.container()
+    if predict_image_clicked:
+        if uploaded_file is None:
+            with prediction_output:
+                st.markdown("#### Prediction Result")
+                st.warning("Please upload an image first.")
+        else:
+            image_for_prediction = Image.open(uploaded_file)
+            run_model(selected_image_model, image_for_prediction, output=prediction_output)
+    else:
+        with prediction_output:
+            if uploaded_file is None:
+                st.markdown("#### Prediction Result")
+                st.caption("Upload an image and click Predict Image to view results here.")
+
+    st.markdown("#### Preview and Diagnosis")
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", width=420)
+    else:
+        st.info("Upload an image to preview here.")
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 
 "---"
 # --------------------------------------------------------------
@@ -483,9 +750,12 @@ def load_data():
 
 lung_df = load_data()
 
+<<<<<<< HEAD
 
 print(lung_df.columns)
 
+=======
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 # Mapping dictionary for binary columns (1: No, 2: Yes)
 binary_mapping = {1: "No", 2: "Yes", "YES": "Yes", "NO": "No", "M": "Male", "F": "Female"}
 
@@ -542,7 +812,11 @@ lung_df_filtered = lung_df_filtered[columns_to_display]
 
 st.dataframe(
     lung_df_filtered,
+<<<<<<< HEAD
     use_container_width=True,
+=======
+    width='stretch',
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
     column_config={"Age": st.column_config.TextColumn("Age")},
 )
 
@@ -551,6 +825,7 @@ st.dataframe(
 
 "---"
 
+<<<<<<< HEAD
 # Pie chart for Lung Cancer status
 lung_cancer_counts = lung_df_filtered['Lung Cancer'].value_counts().reset_index()
 lung_cancer_counts.columns = ['Status', 'Count']
@@ -587,10 +862,106 @@ gender_chart = (
 )
 
 st.altair_chart(gender_chart, use_container_width=True)
+=======
+st.markdown(
+    """
+    <div class="viz-section">
+        <div class="viz-title">Interactive Cancer Analytics</div>
+        <div class="viz-sub">Hover over chart elements to spotlight key trends and compare distributions instantly.</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Pie chart for Lung Cancer status
+lung_cancer_counts = lung_df_filtered['Lung Cancer'].value_counts().reset_index()
+lung_cancer_counts.columns = ['Status', 'Count']
+lung_cancer_counts['Percent'] = (lung_cancer_counts['Count'] / lung_cancer_counts['Count'].sum()) * 100
+
+pie_highlight = alt.selection_point(fields=['Status'], on='mouseover', empty=True)
+
+lung_cancer_chart = (
+    alt.Chart(lung_cancer_counts)
+    .mark_arc(innerRadius=68, cornerRadius=7, padAngle=0.02, stroke='#081320', strokeWidth=2)
+    .encode(
+        theta=alt.Theta(field='Count', type='quantitative'),
+        color=alt.Color(
+            field='Status',
+            type='nominal',
+            legend=alt.Legend(title='Lung Cancer Status'),
+            scale=alt.Scale(range=['#2dd4bf', '#0ea5e9', '#f87171'])
+        ),
+        opacity=alt.condition(pie_highlight, alt.value(1), alt.value(0.65)),
+        tooltip=[
+            alt.Tooltip('Status:N', title='Status'),
+            alt.Tooltip('Count:Q', title='Cases'),
+            alt.Tooltip('Percent:Q', title='Share', format='.1f')
+        ]
+    )
+    .add_params(pie_highlight)
+    .properties(title='Lung Cancer Status Distribution', height=320)
+    .configure(background='transparent')
+    .configure_view(strokeOpacity=0)
+    .configure_title(color='#e6f4ff', fontSize=18)
+    .configure_axis(labelColor='#c3d8ea', titleColor='#e6f4ff', gridColor='#29405a')
+    .configure_legend(labelColor='#c3d8ea', titleColor='#e6f4ff')
+)
+
+gender_counts = lung_df_filtered['Gender'].value_counts().reset_index()
+gender_counts.columns = ['Gender', 'Count']
+
+bar_highlight = alt.selection_point(fields=['Gender'], on='mouseover', empty=True)
+
+bar_base = alt.Chart(gender_counts).encode(
+    x=alt.X('Gender:N', title='Gender', axis=alt.Axis(labelAngle=0)),
+    y=alt.Y('Count:Q', title='Count'),
+    tooltip=[alt.Tooltip('Gender:N'), alt.Tooltip('Count:Q')]
+)
+
+bar_chart = bar_base.mark_bar(cornerRadiusTopLeft=8, cornerRadiusTopRight=8).encode(
+    color=alt.condition(
+        bar_highlight,
+        alt.Color('Gender:N', scale=alt.Scale(range=['#2dd4bf', '#0ea5e9']), legend=None),
+        alt.value('#3a5875')
+    )
+).add_params(bar_highlight)
+
+bar_labels = bar_base.mark_text(
+    dy=-8,
+    color='#dff6ff',
+    fontSize=12,
+    fontWeight='bold'
+).encode(text='Count:Q')
+
+gender_chart = (
+    (bar_chart + bar_labels)
+    .properties(title='Gender Distribution', height=320)
+    .configure(background='transparent')
+    .configure_view(strokeOpacity=0)
+    .configure_title(color='#e6f4ff', fontSize=18)
+    .configure_axis(labelColor='#c3d8ea', titleColor='#e6f4ff', gridColor='#29405a')
+    .configure_legend(labelColor='#c3d8ea', titleColor='#e6f4ff')
+)
+
+chart_col_1, chart_col_2 = st.columns(2, gap='large')
+
+with chart_col_1:
+    
+    st.altair_chart(lung_cancer_chart, width='stretch')
+    st.markdown("<div class='chart-caption'>Status ratio is shown as a donut chart with hover spotlight.</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+with chart_col_2:
+    
+    st.altair_chart(gender_chart, width='stretch')
+    st.markdown("<div class='chart-caption'>Hover bars to emphasize each cohort and compare case volume.</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 
 "---"
 # --------------------------------------------------------------
 
+<<<<<<< HEAD
 # Streamlit UI
 st.subheader("📋 Lung Cancer Prediction Survey")
 st.write("**Enter the patient's information below to predict the likelihood of lung cancer:**")
@@ -599,11 +970,29 @@ st.write("**Enter the patient's information below to predict the likelihood of l
 def load_models():
     # Load the models
     lr_model = joblib.load('models/lr_model.pkl')  # Corrected model name
+=======
+@st.cache_resource(show_spinner=False)
+def load_models():
+    # Load the models
+    aux_paths = [
+        'models/lr_model.pkl',
+        'models/knn_model.pkl',
+        'models/label_encoder.pkl',
+        'models/scaler.pkl',
+    ]
+    for aux_path in aux_paths:
+        if not _ensure_local_artifact(aux_path):
+            st.error(f"Required model artifact not found: {aux_path}")
+            st.stop()
+
+    lr_model = joblib.load('models/lr_model.pkl')
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
     knn_model = joblib.load('models/knn_model.pkl')
     label_encoder = joblib.load('models/label_encoder.pkl')
     scaler = joblib.load('models/scaler.pkl')
     return lr_model, knn_model, label_encoder, scaler
 
+<<<<<<< HEAD
 lr_model, knn_model, label_encoder, scaler = load_models()
 
 # Age input
@@ -646,10 +1035,65 @@ if st.button("Predict"):
     result = "Likely to have lung cancer." if prediction[0] == 1 else "Unlikely to have lung cancer."
     # Display prediction result
     st.write("\n\n**Prediction Result:**", result)
+=======
+
+with survey_col:
+    st.markdown("#### 📋 Survey Prediction")
+    st.caption("Compact risk-form controls for quick patient screening.")
+
+    age = st.slider("**Select Age**", min_value=1, max_value=120, value=30, key="survey_age")
+    gender = st.selectbox("**Select Gender**", options=["Male", "Female"], key="survey_gender")
+
+    feature_inputs = {}
+    survey_features = [
+        feature for feature in lung_df.columns
+        if feature not in columns and feature != "Lung Cancer"
+    ]
+
+    feat_col_1, feat_col_2 = st.columns(2, gap="small")
+    for idx, feature in enumerate(survey_features):
+        target_col = feat_col_1 if idx % 2 == 0 else feat_col_2
+        with target_col:
+            feature_inputs[feature] = st.selectbox(
+                f"**{feature}?**",
+                options=["No", "Yes"],
+                key=f"survey_feature_{idx}"
+            )
+
+    survey_model_choice = st.selectbox(
+        "**Choose Model**",
+        options=["Logistic Regression", "K-Nearest Neighbors"],
+        key="survey_model_choice"
+    )
+
+    if st.button("Predict Survey", key="predict_survey_button"):
+        lr_model, knn_model, label_encoder, scaler = load_models()
+        selected_model = lr_model if survey_model_choice == "Logistic Regression" else knn_model
+
+        input_data = {
+            "Gender": 1 if gender == "Male" else 0,
+            "Age": age,
+            **feature_inputs,
+            "Lung Cancer": "No"
+        }
+
+        input_df = pd.DataFrame([input_data])
+        for col in input_df.columns:
+            if col not in columns:
+                input_df[col] = label_encoder.transform(input_df[col])
+
+        del input_df["Lung Cancer"]
+        input_df = scaler.transform(input_df)
+
+        prediction = selected_model.predict(input_df)
+        result = "Likely to have lung cancer." if prediction[0] == 1 else "Unlikely to have lung cancer."
+        st.success(result)
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 
 # --------------------------------------------------------------
 
 
+<<<<<<< HEAD
 # logo and images
 
 UKZN_LOGO = "images/UKZN.png"
@@ -679,6 +1123,12 @@ st.subheader("🌍 Lung Cancer Research")
 
 
 "---"
+=======
+st.subheader("🌍 Lung Cancer Research")
+
+
+
+>>>>>>> 4342f23 (Initial commit: Lung Cancer Detection with ViT)
 st.subheader("🔗 References")
 
 st.write(
