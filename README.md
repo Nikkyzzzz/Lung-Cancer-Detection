@@ -25,7 +25,7 @@ considering the real-world implications of different types of
 errors, especially in cases where misdiagnosing a cancer case 
 is far more critical.
 
-#  🫁 Lung Cancer Research Application
+#  Lung Cancer Research Application
 
 This is a simple Streamlit app demonstration used for Lung Cancer Research. Uses Vision Transformer Models to predict whether CT or Histopathological scan images are normal, benign, or malignant.
 
