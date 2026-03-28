@@ -31,21 +31,7 @@ This is a simple Streamlit app demonstration used for Lung Cancer Research. Uses
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://lung-cancer-research.streamlit.app/)
 
----
 
-## 🎥 Demo Video  
-
-Check out the demo video showcasing the application's functionality:  
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=nGwYNtuyl8E">
-    <img src="https://img.youtube.com/vi/nGwYNtuyl8E/0.jpg" alt="Watch Demo Video" />
-  </a>
-</p>  
-
-*(Click the image above or [here](https://www.youtube.com/watch?v=nGwYNtuyl8E) to watch the video.)*  
-
----
 
 ### How to run it on your own machine
 
