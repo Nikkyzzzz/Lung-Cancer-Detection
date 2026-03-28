@@ -1,0 +1,16 @@
+# Environments
+venv/
+env/
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# IDEs and OS files
+.vscode/
+desktop.ini
+.DS_Store
+
+# Large Data (Optional but recommended)
+"The IQ-OTHNCCD lung cancer dataset/"
