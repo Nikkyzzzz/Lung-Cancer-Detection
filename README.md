@@ -1,5 +1,5 @@
 
-#  🫁 Lung Cancer Research Paper
+#  Lung Cancer Research Paper
 
 ***Abstract***-Lung cancer is a significant contributor to 
 cancer-related mortality. With recent advancements in 
@@ -60,4 +60,4 @@ Check out the demo video showcasing the application's functionality:
    ```
    $ streamlit run streamlit_app.py
    ```
-=======
+
